@@ -1,156 +1,47 @@
-# GigaChat + Codex Recovery State (Single Handoff)
+# GigaChat + Codex Recovery Pointer
 
 Date: 2026-08-24
 
-Purpose: preserve one complete handoff point for future chats. This file is the recovery snapshot, not a design document.
+## Purpose
 
-## CURRENT CONFIRMED STATE
+This file is a pointer for agents/incidents history only.
 
-### Working topology
+It is NOT the source of truth and must not become a second recovery artifact.
 
-```
-Codex
- |
- model_provider = giga
- |
- gpt2giga local bridge
- |
- http://127.0.0.1:8090/v1
- |
- GigaChat API
-```
+## Canonical recovery artifact
 
-### Local bridge evidence
-
-Confirmed:
-
-- `gpt2giga --env-path ~/.config/loom/secrets/gigachat.env --inspect-config --proxy.port 8090` returned valid configuration.
-- Profile:
-  - id: `native-gigachat`
-  - provider: `gigachat`
-  - base_url: `https://api.giga.chat/v1`
-- `curl http://127.0.0.1:8090/v1/models` returned models:
-  - GigaChat-2
-  - GigaChat-2-Max
-  - GigaChat-2-Pro
-  - GigaChat-3-Ultra
-  - Embeddings variants
-- `POST /v1/chat/completions` succeeded through localhost bridge.
-
-Test:
+The canonical handoff document is:
 
 ```
-model: GigaChat-2
-message: "Скажи одно слово: работает"
-response: "работает"
+memory/infrastructure/gigachat-codex-recovery-2026-08-24.md
 ```
 
-## CODEX CONFIGURATION
-
-Confirmed:
-
-`~/.codex/config.toml`
+Repository:
 
 ```
-[model_providers.giga]
-name = "GigaChat via gpt2giga"
-base_url = "http://127.0.0.1:8090/v1"
-wire_api = "responses"
-requires_openai_auth = false
+fatterthancat/memory
 ```
 
-Additional config found:
+## Related evidence
+
+Network evidence:
 
 ```
-~/.codex/giga.config.toml
-
-model = "codex-giga"
-model_provider = "giga"
+memory/infrastructure/gigachat-network-path-2026-08-24.md
 ```
 
-## SECRETS
-
-Confirmed:
+Runtime snapshot:
 
 ```
-~/.config/loom/secrets/gigachat.env
-GIGACHAT_CREDENTIALS=...
+memory/infrastructure/gigachat-runtime.md
 ```
 
-Do not copy credentials into GitHub.
+## Rule for future changes
 
-## RELATED REPOSITORIES
+When new confirmed GigaChat/Codex facts appear:
 
-Relevant repositories:
+1. Update the canonical artifact in `memory` first.
+2. Keep this file only as a navigation pointer.
+3. Do not create additional recovery snapshots.
 
-- `loom`
-- `council-memory-first`
-- `lora`
-- `agents`
-- `github_map`
-
-These are context sources only. Runtime truth is the machine state and Git history.
-
-## RECOVERY HISTORY
-
-Problem: repeated reconstruction of the same working state from chat history.
-
-Failure class:
-
-- OAuth/token/session persistence was uncertain.
-- Codex config was not proven to be the root cause.
-- Bridge itself was proven functional.
-
-## RECOVERY GATE
-
-Do not continue debugging or modifying GigaChat integration until this single recovery artifact is complete and sufficient for handoff.
-
-Reason:
-
-Repeated repair without a stable recovery snapshot caused the same state reconstruction cycle to repeat. Future work must update this artifact first when a new confirmed fact appears.
-
-## CANONICAL ARTIFACT AUDIT
-
-Checked repositories:
-
-- `loom`
-- `memory`
-- `github_map`
-
-Searches performed:
-
-- `GIGACHAT`
-- `gigachat`
-- `gpt2giga`
-- `loom-gigachat`
-
-Result:
-
-- No additional matching files were found in these repositories through GitHub search.
-- Existing GigaChat history references already known from the previous mapping were not duplicated into new recovery files.
-- This artifact remains the canonical handoff location.
-
-UNKNOWN:
-
-- GitHub search does not prove absence of unindexed local files or historical deleted files.
-- Old commits were not exhaustively rewritten or removed; they remain historical evidence.
-
-## UNKNOWN
-
-Still not proven:
-
-- exact bridge launch command used for the last persistent setup;
-- token persistence behavior after reboot;
-- which repository contains the canonical setup instructions.
-
-## NEXT TIME
-
-Start here:
-
-1. Check `gpt2giga` process and port 8090.
-2. Run `/v1/models` health check.
-3. Run one `/v1/chat/completions` test.
-4. Only then inspect Codex config.
-5. Update this artifact before making further recovery changes.
-
-This file is intended as the single recovery handoff point.
+Historical context may remain here, but operational recovery state belongs only to the canonical artifact.
