@@ -1,139 +1,66 @@
 # Codex First-Agent Forensics
 
-Status: **IN PROGRESS**
+Status: **EVIDENCE PASS COMPLETE — PROTOCOL v0 DERIVED**
 
-This investigation treats the user's real OpenAI Codex work history as the first
-agent donor for `fatterthancat/agents`.
+This investigation reconstructs retained Codex work across `lora`, `loom` and `council-memory-first` and uses later Git history to separate execution success from long-term product survival.
 
-The objective is not to design a framework from first principles. The objective
-is to reconstruct what actually happened, distinguish operator discipline from
-agent behavior and runtime capability, and retain only patterns supported by
-repeatable evidence.
+## Outputs
+
+- [`REPORT.md`](REPORT.md) — synthesis, evidence locks and principal findings.
+- [`THREADS.md`](THREADS.md) — analyzable thread inventory and thread-to-commit map.
+- [`CASES.md`](CASES.md) — end-to-end cases, failures, recovery and attribution limits.
+- [`PROTOCOL.md`](PROTOCOL.md) — minimal evidence-backed external-worker protocol v0.
 
 ## Research question
 
-Which minimal agent primitives earned their place through observed work across
-multiple projects?
+Which minimal agent primitives earned their place through observed work across multiple projects?
 
 The required evidence chain is:
 
 ```text
 operator task
-  -> Codex turn and tool activity
-  -> filesystem change / command result
-  -> test or other verification
-  -> Git commit, tree, PR, issue, CI run, or durable artifact
-  -> later repository state
+-> Codex turn and tool activity
+-> filesystem change / command result
+-> test or other verification
+-> Git commit, tree, CI run, or durable artifact
+-> later repository state
 ```
 
-An agent statement is not proof that an action succeeded.
+An agent statement is not proof. A later owner-level architecture change is not retroactive proof that the agent failed to implement the earlier task.
 
 ## Source locks
 
-### Uploaded forensic corpus
+- Supplied archive: `codex-forensics-final.tar.gz`.
+- SHA-256: `1c4ae0d30969ddd1511f2d8abcde6029c5cafc3abf32c589c1b0c8de5149f685`.
+- `history.jsonl`: 101 records and 16 session IDs.
+- runtime DB: 22 thread IDs, 96 turns and 5,690 typed items.
+- item inventory: 1,481 command executions, 359 file changes, 805 agent messages, 101 user messages, 53 web searches, 28 MCP calls and 21 context compactions.
+- log projection: 30,933 rows and 75 distinct non-null thread IDs.
 
-- Archive: `codex-forensics-final.tar.gz`
-- SHA-256: `1c4ae0d30969ddd1511f2d8abcde6029c5cafc3abf32c589c1b0c8de5149f685`
-- `history.jsonl`: 101 records, 16 session ids
-- `thread_history_1.sqlite`: 22 thread ids, 96 turns, 5,690 items
-- Item inventory:
-  - 101 user messages
-  - 805 agent messages
-  - 2,835 reasoning items
-  - 1,481 command executions
-  - 359 file changes
-  - 53 web searches
-  - 28 MCP tool calls
-  - 21 context compactions
-  - 6 image views
-- `logs_2.sqlite`: 30,933 log rows and 75 non-null thread ids
+The count differences are a corpus-completeness boundary, not an error to hide. Six late canary threads exist only in projections.
 
-The difference between history sessions, projected threads, and log thread ids
-must be reconciled. None of these counts is currently treated as a completeness
-claim.
+## Repository time boundaries
 
-### Repository snapshots inside the corpus
-
-| Repository | Snapshot ref | Current GitHub ref at investigation start | Boundary |
+| Repository | Supplied snapshot | Current GitHub state checked | Finding |
 |---|---|---|---|
-| `fatterthancat/lora` | `main@5d86d35d8014f6c42461f9d67569127b2b0c4347` | same | Direct snapshot/current comparison is available |
-| `fatterthancat/loom` | `issue-8-bounded-gigachat@11f90f9174ea12a046eddf72d13f21ef41386500` | `main@349286b3c98a9aa1aa260f1afde472ad9019ec70` | Different branch and later repository state; do not collapse them |
-| `fatterthancat/council-memory-first` | `main@08e7068f01153211d4c602291aec753b5232dbd9` | `main@e6ffbe82ea5016b3b9c69a11497e7bf92ee4ec52` | Historical snapshot must be compared through Git history |
+| `lora` | `main@5d86d35` | same | Codex sync commits survive on main |
+| `loom` | branch `issue-8-bounded-gigachat@11f90f9`; archived main older | `main@349286b` | Git evolution confirmed; no matching retained Codex thread |
+| `council-memory-first` | `main@08e7068` | `main@e6ffbe82` | runtime slices entered main, then owner revised architecture; Slice 08 diverged |
 
-### Navigation and destination state
+## Evidence labels
 
-- `fatterthancat/agents@ba7b433b16be74769380588f2518561075d1f44b`
-  at investigation start.
-- `fatterthancat/github_map@ed999b3552f8cf595a1d6eb6bfc7d05202d2e243`
-  at investigation start.
-- `fatterthancat/memory@e0b92da71212afa7a2d0f2e63dc16375611d76d9`
-  at investigation start.
+- **CONFIRMED** — direct command/file/Git/current-repository support.
+- **INFERRED** — interpretation joining confirmed observations.
+- **UNKNOWN** — absent or insufficient, including Loom thread attribution.
+- **CONFLICT** — incompatible states that require explicit ref/time boundaries.
+- **NOT_RUN** — verification could not execute; never rewritten as a project test failure.
 
-The current `github_map/repos/agents.md` still classifies `agents` as empty,
-while the repository now contains an initial README and commit history. This is
-a confirmed map/repository conflict, not evidence about agent behavior.
+## Principal conclusion
 
-## Evidence classes
+The evidence does not justify another monolithic agent framework. It supports a replaceable external worker with a precise handoff, bounded authority, reversible execution, observable acceptance, an evidence record and an independently readable checkpoint.
 
-- **CONFIRMED**: directly supported by commands, file changes, tests, Git
-  objects, CI, issues/PRs, or a durable artifact.
-- **INFERRED**: a candidate explanation or cross-case pattern.
-- **UNKNOWN**: not checked, absent, irreconcilable, or not provable from the
-  retained evidence.
-- **CONFLICT**: sources describe incompatible states and neither may be silently
-  preferred without resolving time/ref boundaries.
+Loom owns continuity around work. Council Lab owns experiments about how work is executed. Git, tests and physical artifacts own their respective facts. `agents` should own only the portable boundary and accumulated evidence.
 
-Negative results and operator corrections are retained as evidence.
+## Data boundary
 
-## Workstream
-
-1. Reconcile session/thread/log identities and establish a stable case index.
-2. Reconstruct each selected case from operator task through durable outcome.
-3. Validate Codex claims against command results, file changes, tests, Git
-   history, and later repository state.
-4. Classify every useful mechanism as:
-   - operator task-contract discipline;
-   - agent behavior;
-   - OpenAI/Codex runtime capability;
-   - project/tool capability.
-5. Extract repeated successes, repeated failures, recovery behavior, and stop
-   conditions.
-6. Compare patterns across at least `lora`, `loom`, and
-   `council-memory-first`; a single-project observation cannot become a
-   general agent primitive.
-7. Produce a minimal candidate protocol only after the cross-case comparison.
-
-Candidate envelope fields to test, not assume:
-
-```yaml
-task:
-context:
-authority:
-constraints:
-actions:
-verification:
-artifacts:
-unknowns:
-```
-
-## Planned outputs
-
-- A case index with source locks and outcome classifications.
-- End-to-end case reconstructions with claim-to-evidence links.
-- A failure and recovery catalogue.
-- A comparison of operator, agent, runtime, and project responsibilities.
-- A minimal evidence-backed agent protocol v0.
-- Explicit rejected ideas and unresolved unknowns.
-
-No `agent.py`, orchestration framework, RAG layer, router, or swarm is
-authorized by this investigation alone.
-
-## Data handling boundary
-
-The raw Codex archive is evidence, not a public project artifact. Runtime
-configuration, local paths, logs, and possible credentials must not be copied
-into this public repository without a separate redaction and publication
-decision.
-
-Derived reports should cite hashes, repository objects, and minimal excerpts
-needed to reproduce a finding.
+The raw forensic archive is not published. It contains runtime configuration, local paths, logs and potentially sensitive material. Public reports use hashes, Git objects, aggregated counts and minimal redacted observations.
