@@ -24,8 +24,7 @@ Codex
 
 Confirmed:
 
-- `gpt2giga --env-path ~/.config/loom/secrets/gigachat.env --inspect-config --proxy.port 8090`
-  returned valid configuration.
+- `gpt2giga --env-path ~/.config/loom/secrets/gigachat.env --inspect-config --proxy.port 8090` returned valid configuration.
 - Profile:
   - id: `native-gigachat`
   - provider: `gigachat`
@@ -109,6 +108,32 @@ Do not continue debugging or modifying GigaChat integration until this single re
 Reason:
 
 Repeated repair without a stable recovery snapshot caused the same state reconstruction cycle to repeat. Future work must update this artifact first when a new confirmed fact appears.
+
+## CANONICAL ARTIFACT AUDIT
+
+Checked repositories:
+
+- `loom`
+- `memory`
+- `github_map`
+
+Searches performed:
+
+- `GIGACHAT`
+- `gigachat`
+- `gpt2giga`
+- `loom-gigachat`
+
+Result:
+
+- No additional matching files were found in these repositories through GitHub search.
+- Existing GigaChat history references already known from the previous mapping were not duplicated into new recovery files.
+- This artifact remains the canonical handoff location.
+
+UNKNOWN:
+
+- GitHub search does not prove absence of unindexed local files or historical deleted files.
+- Old commits were not exhaustively rewritten or removed; they remain historical evidence.
 
 ## UNKNOWN
 
