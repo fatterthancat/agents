@@ -68,3 +68,45 @@ ChatGPT/Codex/client
 ```
 
 The goal is a remote instrument layer following MCP principles: tools perform controlled operations and return evidence, while persistent state remains in versioned repositories.
+
+## Small VDS runtime profile
+
+Example always-on node:
+
+```
+Ubuntu 24.04
+CPU: 2 cores
+RAM: 2 GB
+Storage: 40 GB
+Traffic: 32 TB
+```
+
+Intended use:
+
+- MCP gateway;
+- GitHub evidence tools;
+- lightweight agent tools;
+- reverse proxy;
+- service coordination.
+
+Not intended use:
+
+- local LLM inference;
+- large model hosting;
+- large permanent repository mirrors;
+- heavy build workloads.
+
+Resource strategy:
+
+```
+VDS:
+  always-on services + network + execution
+
+GitHub:
+  canonical state + history + evidence
+
+Local workstation:
+  GPU workloads + heavy computation
+```
+
+The VDS should remain small and replaceable rather than becoming another source of truth.
