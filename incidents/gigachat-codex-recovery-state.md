@@ -102,6 +102,14 @@ Failure class:
 - Codex config was not proven to be the root cause.
 - Bridge itself was proven functional.
 
+## RECOVERY GATE
+
+Do not continue debugging or modifying GigaChat integration until this single recovery artifact is complete and sufficient for handoff.
+
+Reason:
+
+Repeated repair without a stable recovery snapshot caused the same state reconstruction cycle to repeat. Future work must update this artifact first when a new confirmed fact appears.
+
 ## UNKNOWN
 
 Still not proven:
@@ -118,5 +126,6 @@ Start here:
 2. Run `/v1/models` health check.
 3. Run one `/v1/chat/completions` test.
 4. Only then inspect Codex config.
+5. Update this artifact before making further recovery changes.
 
 This file is intended as the single recovery handoff point.
