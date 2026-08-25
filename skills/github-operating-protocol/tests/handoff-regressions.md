@@ -1,6 +1,6 @@
 # Handoff and Recovery Regressions
 
-These scenarios capture repeated real failure shapes where GitHub access existed but the agent either did not use it, did not find the canonical state, or failed to leave a durable recovery point. They are RED/GREEN tests for the GitHub operating skill.
+These scenarios capture repeated real failure shapes where GitHub access existed but the agent either did not use it, did not find the canonical state, or failed to leave a durable recovery point. They are RED/GREEN tests for `github-operating-protocol`.
 
 ## H1. `look at GitHub` must mean an actual GitHub read
 

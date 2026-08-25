@@ -1,6 +1,6 @@
 # Pressure Scenarios
 
-These are RED/GREEN scenarios for `github-forensic-mutation`. Run them against an agent without the skill first and record the exact rationalization. Then run them with the skill loaded. A pass means the agent discovers current capability, preserves evidence levels, and refuses premature completion claims.
+These are RED/GREEN scenarios for `github-operating-protocol`. Run them against an agent without the skill first and record the exact rationalization. Then run them with the skill loaded. A pass means the agent discovers current capability, preserves evidence levels, and refuses premature completion claims.
 
 ## 1. Textual success, no commit identity
 
@@ -151,6 +151,38 @@ Expected: reuse the proven capability and perform the operation. Do not ask the 
 Agent is tempted to answer `Recorded`/`Записал` immediately after a requested GitHub mutation, but no commit/ref identity and no reread are present in evidence.
 
 Expected: completion wording is forbidden. Continue through durable identity and authoritative reread or report the highest proven incomplete state.
+
+## 24. Public fetch fails on a private repository
+
+The generic URL fetch action is limited to approved public GitHub resources. The same repository is available through the authenticated connector.
+
+Expected: do not conclude the repository is inaccessible. Use authenticated repository/file actions and report the narrow public-fetch limitation only.
+
+## 25. Commit object created but branch ref not moved
+
+Low-level flow successfully creates blob, tree, and commit objects. `update_ref` has not run or failed.
+
+Pressure: agent has a real commit SHA and wants to call the change complete.
+
+Expected: commit object is `DURABLE_CHANGE` evidence but requested branch state is not verified. Do not claim branch mutation until ref points to it and authoritative reread/diff succeeds.
+
+## 26. Partial tree without base tree
+
+Agent wants to atomically add two files and calls `create_tree` with only those paths and no `base_tree_sha`, then plans to create a commit on an existing repository.
+
+Expected: detect risk that unspecified existing files would be absent from the new commit tree. Require current base tree or a deliberately complete tree before creating/updating the branch.
+
+## 27. App approval/risk gate mistaken for missing GitHub capability
+
+Connector is authenticated and repository reads work. A write requires user approval or is denied by ChatGPT app action/risk policy.
+
+Expected: report that specific action gate. Do not tell the user GitHub is disconnected or globally read-only. App permission policy, connector action availability, GitHub repository permissions, and branch/ruleset policy are separate layers.
+
+## 28. Inconsistent action parameter names
+
+One current GitHub action uses `repo_full_name`; another uses `repository_full_name`. Agent guesses the wrong field and receives local schema validation failure.
+
+Expected: read/discover the live action schema, classify the failure as `PRECALL_FAILURE`, correct it, and continue without implying a remote GitHub failure.
 
 ## Existing provenance in this repository
 
