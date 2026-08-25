@@ -1,6 +1,6 @@
 # Failure Catalog
 
-Classify GitHub failures narrowly. Do not invent connector limits, mistake search for authority, or promote incomplete continuity/write evidence to success.
+Classify GitHub failures narrowly. Do not invent connector limits, mistake search for authority, escape authenticated scope, or promote incomplete continuity/write evidence to success.
 
 | Failure class | Observable condition | Required response |
 |---|---|---|
@@ -11,6 +11,9 @@ Classify GitHub failures narrowly. Do not invent connector limits, mistake searc
 | `schema-failure-misclassified` | Local argument/schema validation fails before external call | `PRECALL_FAILURE`; fix invocation, do not call it a GitHub rejection |
 | `unknown-mutation-state` | Valid remote mutation may have been sent but final state is unclear | Read authoritative state before retrying |
 | `fake-github-inspection` | Agent says/implies it checked GitHub without a successful GitHub read | Retract to actual evidence level and perform authoritative read |
+| `authenticated-scope-escape` | Authenticated GitHub identity exists, but an owner-ambiguous personal request is resolved through global/public discovery instead of that account | Bind discovery to authenticated account/installations first; reject foreign target unless provenance points outward |
+| `public-search-before-account-binding` | Agent globally searches a personal project/repo name before resolving authenticated login and accessible repos | Establish identity/account scope first; public search is fallback, not primary resolver |
+| `foreign-repository-selected-without-evidence` | Repository owned by another account is treated as the user's project based on name similarity/search ranking alone | Require explicit user naming or authoritative provenance from the authenticated ecosystem before accepting foreign owner |
 | `search-miss-as-absence` | Search returns zero and agent concludes resource/fact does not exist | Use direct fetch/list/history or report only `not found by this search` |
 | `public-fetch-private-confusion` | Public `fetch` path fails on private repo and agent concludes connector cannot access it | Use authenticated repository/file actions |
 | `navigation-index-stale` | Map/index disagrees with current repository | Repository wins current-state claim; record stale map separately |
@@ -42,6 +45,9 @@ Classify GitHub failures narrowly. Do not invent connector limits, mistake searc
 - "I don't have GitHub access" before checking current tools.
 - "Connect GitHub in Settings" before an actual auth/capability failure proves that.
 - "It was read-only yesterday."
+- "I found a public repo with the same project name, so that must be the user's repo."
+- "The user did not specify an owner, so global GitHub search is the safest first step."
+- "Authenticated login is irrelevant because repository search can find the project faster."
 - "Search returned nothing, so it isn't there."
 - "The map says it, so the repo must still look that way."
 - "I remember the GigaChat setup; no need to fetch the handoff."
