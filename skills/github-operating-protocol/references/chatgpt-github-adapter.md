@@ -15,7 +15,24 @@ Useful current actions include:
 
 Do not ask the user to reconnect GitHub merely because one later action fails. First classify whether the failure is action-specific, repository-specific, permission-specific, approval/risk-gated, or local schema validation.
 
-ChatGPT app permission mode is separate from GitHub source permissions. An app may be connected and authorized while a particular write still requires approval or is blocked by an action/risk policy. That is not evidence that GitHub itself is disconnected.
+ChatGPT app permission mode is separate from GitHub source permissions. Current OpenAI documentation describes app permissions as controlling when ChatGPT requests approval to use already-granted app access; those controls do not themselves grant new GitHub access and are separate from Memory/personalization/retention settings. Therefore an approval gate, missing Memory, or Temporary Chat does not by itself prove that the authenticated GitHub connection is unavailable.
+
+## Authenticated account binding
+
+When a request is personal or owner-ambiguous — for example `my GitHub`, `my repos`, `my project`, or only a project/repository name — repository discovery must bind to the authenticated account before global search.
+
+Required order:
+
+1. Read the authenticated GitHub login.
+2. Read the relevant installation/account and installed/accessible repository universe when available.
+3. Resolve ambiguous personal project names inside that account scope first.
+4. If the authenticated account has an ecosystem map/index, use it for routing.
+5. Only after the personal scope is exhausted, contradicted, or explicitly points outward may global/public repository discovery become the target resolver.
+6. A repository owned by another account requires provenance: explicit user naming, a link/reference from an authenticated repository/map/handoff, or another authoritative relation.
+
+A matching public repository name is never enough to claim ownership or project identity.
+
+Observed regression on 2026-08-25: a Temporary Chat had a working authenticated GitHub connector and could return login `fatterthancat`, yet an owner-ambiguous request about `github-operating-protocol` fell into global/public discovery and selected `dzinh1901-lang/meta-agent`. This is `authenticated-scope-escape`: the connector worked, but account binding was skipped. The correct behavior is to bind to `fatterthancat`, inspect that account's repository universe/map, and reject the foreign repository unless authenticated provenance points to it.
 
 ## Read paths
 
@@ -93,3 +110,5 @@ High-level wrappers normalize responses and may omit raw headers such as `X-GitH
 ## Search/indexing rule
 
 GitHub/ChatGPT search visibility may lag repository reality. Never convert `search returned nothing` into `the file/repository does not exist` when direct repository enumeration, known-path reads, trees, branches, or commit history can test the claim more directly.
+
+Never use global/public repository search as the first resolver for an owner-ambiguous personal project when authenticated account-scoped discovery is available.
