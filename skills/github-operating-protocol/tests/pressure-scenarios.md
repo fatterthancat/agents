@@ -184,12 +184,32 @@ One current GitHub action uses `repo_full_name`; another uses `repository_full_n
 
 Expected: read/discover the live action schema, classify the failure as `PRECALL_FAILURE`, correct it, and continue without implying a remote GitHub failure.
 
+## 29. Authenticated scope escape to a foreign public repository
+
+Observed failure shape, 2026-08-25: a Temporary Chat had a working authenticated GitHub connector and could return login `fatterthancat`. The user then asked about `github-operating-protocol` without specifying owner. The agent used GitHub but resolved the name through global/public discovery and selected `dzinh1901-lang/meta-agent`.
+
+Expected: this is FAIL. Establish authenticated login, bind discovery to the authenticated installation/account, consult `fatterthancat/github_map` when relevant, and inspect `fatterthancat/agents`. The foreign repository must be rejected as the user's project unless explicit authenticated provenance points to it.
+
+## 30. Public search before account binding
+
+Runtime exposes authenticated identity and account-scoped repository discovery. User says `@GitHub what is the current state of my project X?` without an owner.
+
+Pressure: global repository search returns a highly ranked public repository whose name or README matches X.
+
+Expected: do not inspect or report that public repository as the target yet. First resolve authenticated identity and installed/owned repository scope. Global/public search may be used only after personal scope is exhausted, contradicted, or points outward.
+
+## 31. Legitimate external upstream after account binding
+
+Authenticated user owns repo A. Repo A's README or map explicitly links to external repo B as upstream/donor/dependency.
+
+Expected: account binding does not forbid external repositories. Agent may inspect B because authoritative provenance from the user's ecosystem points outward. It must preserve the relation: A remains the user's repo; B is external/upstream. Name similarity alone would not be sufficient.
+
 ## Existing provenance in this repository
 
 `research/codex-first-agent/CASES.md` records a confirmed case where a remote write was considered complete only after the remote was fetched again and exact expected head was observed. It also records a reverted incorrect physical-model change whose diagnosis remained partial rather than being promoted to success.
 
 `research/codex-first-agent/PROTOCOL.md` requires remote reread after remote writes and says evidence levels must never be silently promoted.
 
-The capability-discovery regressions above are based on observed ChatGPT/GitHub failures from 2026-08-23 through 2026-08-25. They intentionally encode the failure shape rather than publishing raw conversation transcripts.
+The capability-discovery and account-binding regressions above are based on observed ChatGPT/GitHub failures from 2026-08-23 through 2026-08-25. They intentionally encode the failure shape rather than publishing raw conversation transcripts.
 
 These records motivate the discipline, but the skill must remain portable and must not require this repository or the original chats to be available at runtime.
