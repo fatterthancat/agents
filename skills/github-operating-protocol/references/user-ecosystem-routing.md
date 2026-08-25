@@ -2,6 +2,20 @@
 
 This reference is specific to the `fatterthancat` GitHub ecosystem. Re-verify current repository state on each task; these ownership rules guide routing but do not replace repository evidence.
 
+## Account binding
+
+For owner-ambiguous personal GitHub requests, establish the current authenticated GitHub login before repository discovery.
+
+When the authenticated login is `fatterthancat`:
+
+1. Treat repositories available through the `fatterthancat` installation/account as the initial repository universe.
+2. Use `fatterthancat/github_map` as the first navigation index for ecosystem/project routing when relevant.
+3. Resolve project names against `fatterthancat/*` and the map before any global/public repository search.
+4. A repository owned by another account is external. Use it only when the user explicitly named it or a verified artifact in the `fatterthancat` ecosystem points to it as upstream, donor, dependency, comparison target, or other relation.
+5. Never infer that a foreign repository is the user's project merely because its name or contents match the query.
+
+Observed regression on 2026-08-25: a Temporary Chat had authenticated GitHub login `fatterthancat` but resolved `github-operating-protocol` through global/public discovery to `dzinh1901-lang/meta-agent`. That is a routing failure. The correct personal route is authenticated account -> `fatterthancat/github_map` -> `fatterthancat/agents` -> `skills/github-operating-protocol/`.
+
 ## Navigation and truth
 
 ### `fatterthancat/github_map`
